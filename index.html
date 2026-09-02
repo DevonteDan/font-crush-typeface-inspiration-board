@@ -56,7 +56,7 @@
     .btn-reset-filters { font-size: 12px; color: var(--terra); font-weight: 600; text-decoration: underline; display: none; }
     .btn-reset-filters.visible { display: inline-block; }
 
-    /* Board & Cards */
+    /* Cards */
     .board-section { padding: 10px 0 60px; flex: 1; }
     .board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 22px; }
     .font-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px; position: relative; box-shadow: var(--shadow-card); transition: transform 0.2s ease, box-shadow 0.2s, background-color 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 230px; }
@@ -101,8 +101,8 @@
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); display: flex; justify-content: space-between; }
     .form-label span.req { color: var(--terra); }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 8px 12px; background: #FFF; border: 1px solid var(--border-d); border-radius: var(--r-sm); color: var(--ink); font-size: 14px; transition: border-color 0.15s, box-shadow 0.15s; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--terra); outline: none; box-shadow: 0 0 0 3px rgba(200,85,61,0.15); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 8px 12px; background: #FFF; border: 1px solid var(--border-d); border-radius: var(--r-sm); color: var(--ink); font-size: 14px; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--terra); outline: 0; box-shadow: 0 0 0 3px rgba(200,85,61,0.15); }
     .form-textarea { resize: vertical; min-height: 62px; line-height: 1.4; }
     .char-count { font-size: 11px; color: var(--light); text-align: right; }
 
@@ -312,9 +312,8 @@
 
       function checkStorageSupport() {
         try {
-          const k = '__fc_test__';
-          localStorage.setItem(k, k);
-          localStorage.removeItem(k);
+          localStorage.setItem('_t', '1');
+          localStorage.removeItem('_t');
           return true;
         } catch (e) { return false; }
       }
@@ -688,7 +687,6 @@
         t.textContent = msg;
         DOM.toastContainer.appendChild(t);
         setTimeout(() => {
-          t.style.transition = 'opacity 0.2s';
           t.style.opacity = '0';
           setTimeout(() => t.remove(), 200);
         }, 3000);
