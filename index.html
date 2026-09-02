@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Crush — Typeface Inspiration Board</title>
+  <meta name="description" content="A tactile digital pinboard for typography references seen in the wild.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F6F1E7; --card: #FAF8F5; --card-h: #FFF; --ink: #1A1714; --muted: #736B63; --light: #9B948B;
+      --border: #E2DACB; --border-d: #CFC5B4; --terra: #C8553D; --terra-h: #B24630; --terra-bg: #F7E9E5;
+      --mustard: #D9A441; --mustard-bg: #FAF4E5; --font-display: 'Fraunces', Georgia, serif;
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-pill: 9999px;
+      --shadow-sm: 0 1px 3px rgba(35,27,20,0.05); --shadow-card: 0 2px 6px rgba(35,27,20,0.06), 0 8px 24px rgba(35,27,20,0.04);
+      --shadow-hover: 0 12px 32px rgba(35,27,20,0.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg) radial-gradient(#E2DACB 1px, transparent 1px) 0 0/24px 24px;
+      color: var(--ink); font-family: var(--font-ui); line-height: 1.5; min-height: 100vh;
+      display: flex; flex-direction: column; -webkit-font-smoothing: antialiased;
+    }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; border: 0; background: none; }
+    :focus-visible { outline: 2px solid var(--terra); outline-offset: 2px; }
+    .container { width: 100%; max-width: 1300px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    .site-header { background: rgba(246,241,231,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; padding: 14px 0; }
+    .header-inner, .brand-group { display: flex; align-items: center; }
+    .header-inner { justify-content: space-between; gap: 16px; }
+    .brand-group { gap: 12px; }
+    .brand-badge { width: 36px; height: 36px; background: var(--terra); color: #FFF; border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 20px; font-weight: 700; transform: rotate(-3deg); box-shadow: 0 2px 6px rgba(200,85,61,0.3); }
+    .brand-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; line-height: 1.1; }
+    .brand-subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 18px; border-radius: var(--r-pill); font-weight: 600; font-size: 14px; transition: all 0.18s ease; }
+    .btn-primary { background: var(--terra); color: #FFF; box-shadow: 0 2px 6px rgba(200,85,61,0.25); }
+    .btn-primary:hover { background: var(--terra-h); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(200,85,61,0.3); }
+    .btn-secondary { background: var(--card); color: var(--ink); border: 1px solid var(--border-d); }
+    .btn-secondary:hover { background: #FFF; }
+
+    /* Filters */
+    .controls-section { padding: 20px 0 12px; }
+    .filters-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 16px 20px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 12px; }
+    .filter-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .filter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); min-width: 74px; }
+    .chips-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { padding: 4px 12px; font-size: 12px; font-weight: 500; border-radius: var(--r-pill); background: var(--bg); border: 1px solid var(--border); color: var(--muted); transition: all 0.15s; user-select: none; }
+    .chip:hover { border-color: var(--border-d); color: var(--ink); background: #FFF; }
+    .chip[aria-pressed="true"] { background: var(--ink); color: #FFF; border-color: var(--ink); font-weight: 600; }
+    .chip-mood.chip[aria-pressed="true"] { background: var(--c, var(--ink)); border-color: var(--c, var(--ink)); }
+    .filter-meta-bar { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 12px; color: var(--muted); }
+    .btn-reset-filters { font-size: 12px; color: var(--terra); font-weight: 600; text-decoration: underline; display: none; }
+    .btn-reset-filters.visible { display: inline-block; }
+
+    /* Board & Cards */
+    .board-section { padding: 10px 0 60px; flex: 1; }
+    .board-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 22px; }
+    .font-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r-md); padding: 22px; position: relative; box-shadow: var(--shadow-card); transition: transform 0.2s ease, box-shadow 0.2s, background-color 0.2s; display: flex; flex-direction: column; justify-content: space-between; min-height: 230px; }
+    .font-card:hover { background: var(--card-h); transform: translateY(-3px) rotate(-0.4deg); box-shadow: var(--shadow-hover); border-color: var(--border-d); }
+    .card-tape { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 44px; height: 16px; background: rgba(217,164,65,0.45); border-left: 2px dashed rgba(26,23,20,0.15); border-right: 2px dashed rgba(26,23,20,0.15); pointer-events: none; }
+    .card-top { margin-bottom: 12px; }
+    .card-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+    .font-family-name { font-size: 24px; font-weight: 700; line-height: 1.15; color: var(--ink); word-break: break-word; }
+    .btn-delete { padding: 3px 8px; border-radius: var(--r-sm); font-size: 11px; font-weight: 600; color: var(--light); transition: all 0.15s; }
+    .btn-delete:hover { color: var(--terra); background: var(--terra-bg); }
+    .btn-delete.confirming { background: var(--terra); color: #FFF; animation: pulse 1s infinite alternate; }
+    @keyframes pulse { from { opacity: 0.85; } to { opacity: 1; transform: scale(1.02); } }
+
+    .badges-row { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--r-pill); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge-category { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+    .badge-mood { background: var(--bg-c, var(--bg)); color: var(--fg-c, var(--ink)); }
+    .badge-fallback { background: #FEECEB; color: #902C1B; border: 1px dashed #E09E95; font-size: 10px; }
+
+    .font-sample-display { font-size: 22px; line-height: 1.35; color: var(--ink); margin: 8px 0 16px; word-break: break-word; min-height: 56px; }
+    .card-footer { border-top: 1px dashed var(--border); padding-top: 10px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; font-size: 11px; color: var(--muted); }
+    .spotted-in-note { font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 190px; }
+    .spotted-tag { font-style: normal; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.03em; color: var(--light); margin-right: 4px; }
+    .saved-date { font-variant-numeric: tabular-nums; color: var(--light); margin-left: auto; }
+
+    .empty-state { text-align: center; padding: 52px 20px; background: var(--card); border: 2px dashed var(--border-d); border-radius: var(--r-lg); max-width: 520px; margin: 36px auto; grid-column: 1 / -1; }
+    .empty-icon { font-family: var(--font-display); font-size: 48px; font-weight: 700; color: var(--terra); margin-bottom: 8px; line-height: 1; }
+    .empty-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .empty-desc { color: var(--muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+
+    /* Modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(26,23,20,0.45); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+    .modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .modal-window { background: var(--card); border: 1px solid var(--border-d); border-radius: var(--r-lg); box-shadow: 0 20px 48px rgba(26,23,20,0.22); width: 100%; max-width: 510px; max-height: 90vh; overflow-y: auto; transform: translateY(16px) scale(0.98); transition: transform 0.2s ease; display: flex; flex-direction: column; }
+    .modal-backdrop.open .modal-window { transform: translateY(0) scale(1); }
+    .modal-header { padding: 18px 22px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .modal-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; }
+    .btn-close-modal { width: 28px; height: 28px; border-radius: var(--r-pill); display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--muted); }
+    .btn-close-modal:hover { background: #EDE6D8; color: var(--ink); }
+
+    .modal-form { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); display: flex; justify-content: space-between; }
+    .form-label span.req { color: var(--terra); }
+    .form-input, .form-select, .form-textarea { width: 100%; padding: 8px 12px; background: #FFF; border: 1px solid var(--border-d); border-radius: var(--r-sm); color: var(--ink); font-size: 14px; transition: border-color 0.15s, box-shadow 0.15s; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--terra); outline: none; box-shadow: 0 0 0 3px rgba(200,85,61,0.15); }
+    .form-textarea { resize: vertical; min-height: 62px; line-height: 1.4; }
+    .char-count { font-size: 11px; color: var(--light); text-align: right; }
+
+    .mood-pill-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .mood-pill-opt { padding: 7px 8px; text-align: center; font-size: 12px; font-weight: 600; border-radius: var(--r-sm); border: 1px solid var(--border); background: #FFF; color: var(--muted); cursor: pointer; transition: all 0.15s ease; }
+    .mood-pill-opt:hover { border-color: var(--muted); color: var(--ink); }
+    .mood-pill-opt.selected { background: var(--c, var(--ink)); color: #FFF; border-color: var(--c, var(--ink)); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+    .preview-box { background: #FFF; border: 1px dashed var(--border-d); border-radius: var(--r-md); padding: 14px; margin-top: 2px; }
+    .preview-box-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-size: 11px; color: var(--light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+    .preview-status { font-size: 11px; font-weight: 600; }
+    .preview-render { font-size: 21px; line-height: 1.35; color: var(--ink); word-break: break-word; min-height: 44px; }
+    .form-feedback { padding: 8px 12px; border-radius: var(--r-sm); font-size: 12px; line-height: 1.4; display: none; }
+    .form-feedback.warn { display: block; background: var(--mustard-bg); border: 1px solid rgba(217,164,65,0.4); color: #7D5908; }
+    .form-feedback.error { display: block; background: var(--terra-bg); border: 1px solid rgba(200,85,61,0.3); color: #962812; }
+    .form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+    /* Toast & Footer */
+    .toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .toast { background: var(--ink); color: #FFF; padding: 9px 18px; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,0.25); animation: toastIn 0.2s cubic-bezier(0.16,1,0.3,1) forwards; }
+    @keyframes toastIn { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    .site-footer { border-top: 1px solid var(--border); padding: 16px 0; background: var(--bg); margin-top: auto; font-size: 12px; color: var(--muted); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .indicator-dot { width: 7px; height: 7px; background: #38A169; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .mobile-pin-btn { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 40; background: var(--terra); color: #FFF; box-shadow: 0 4px 16px rgba(200,85,61,0.4); padding: 12px 18px; border-radius: var(--r-pill); font-weight: 700; font-size: 14px; }
+
+    @media (max-width: 768px) {
+      .board-grid { grid-template-columns: 1fr; gap: 16px; }
+      .filter-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .header-actions .btn-primary { display: none; }
+      .mobile-pin-btn { display: inline-flex; }
+      .mood-pill-picker { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .font-family-name { font-size: 21px; }
+      .font-sample-display { font-size: 19px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-group">
+        <div class="brand-badge" aria-hidden="true">¶</div>
+        <div>
+          <h1 class="brand-title">Font Crush</h1>
+          <p class="brand-subtitle">Typeface Inspiration Board</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnOpenModal" class="btn btn-primary" aria-haspopup="dialog">+ Pin a font</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="controls-section" aria-label="Board Filters">
+      <div class="filters-box">
+        <div class="filter-row">
+          <span class="filter-label">Category</span>
+          <div class="chips-group" id="categoryChips"></div>
+        </div>
+        <div class="filter-row">
+          <span class="filter-label">Mood</span>
+          <div class="chips-group" id="moodChips"></div>
+        </div>
+        <div class="filter-meta-bar">
+          <span id="filterCounter">Showing 0 fonts</span>
+          <button type="button" id="btnResetFilters" class="btn-reset-filters">Reset filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="board-section" aria-label="Typography Board">
+      <div id="boardGrid" class="board-grid" role="region" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <button id="btnOpenModalMobile" class="mobile-pin-btn" aria-label="Pin a font">+ Pin a font</button>
+
+  <div id="fontModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h2 id="modalTitle" class="modal-title">Pin a Typeface</h2>
+        <button type="button" id="btnCloseModal" class="btn-close-modal" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <form id="fontForm" class="modal-form" novalidate>
+        <div class="form-group">
+          <label for="fontNameInput" class="form-label">Font Name <span class="req">*</span></label>
+          <input type="text" id="fontNameInput" class="form-input" placeholder="e.g. Playfair Display, Caveat, Syne" maxlength="80" required autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label for="fontCategorySelect" class="form-label">Category <span class="req">*</span></label>
+          <select id="fontCategorySelect" class="form-select" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Mood <span class="req">*</span></label>
+          <div class="mood-pill-picker" id="moodPicker" role="radiogroup"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="fontSpottedInput" class="form-label">Spotted In <span style="font-weight:400; text-transform:none;">(optional)</span></label>
+          <input type="text" id="fontSpottedInput" class="form-input" placeholder="e.g. coffee shop menu, poster, album cover" maxlength="140">
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">
+            <span>Sample Sentence</span>
+            <span id="sampleCharCount" class="char-count">0/240</span>
+          </div>
+          <textarea id="fontSampleInput" class="form-textarea" maxlength="240" placeholder="Sphinx of black quartz, judge my vow"></textarea>
+        </div>
+
+        <div class="preview-box">
+          <div class="preview-box-header">
+            <span>Live Render Preview</span>
+            <span id="previewStatus" class="preview-status">Default preview</span>
+          </div>
+          <div id="previewText" class="preview-render">Sphinx of black quartz, judge my vow</div>
+        </div>
+
+        <div id="formFeedback" class="form-feedback" role="alert"></div>
+
+        <div class="form-actions">
+          <button type="button" id="btnCancelForm" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="btnSubmitFont" class="btn btn-primary">Save Pin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="indicator-dot"></span>
+        <span id="storageNote">Data disimpan lokal di browser ini (localStorage)</span>
+      </div>
+      <div>Font Crush v1.0 • Curated Typography Inspiration</div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'fontcrush:v1';
+      const DEFAULT_SAMPLE = 'Sphinx of black quartz, judge my vow';
+      
+      const CATEGORIES = [
+        { id: 'serif', label: 'Serif' },
+        { id: 'sans-serif', label: 'Sans-Serif' },
+        { id: 'display', label: 'Display' },
+        { id: 'monospace', label: 'Monospace' },
+        { id: 'handwritten', label: 'Handwritten' }
+      ];
+
+      const MOODS = [
+        { id: 'cozy', label: 'Cozy', color: '#B87333', bg: '#F8EFEA' },
+        { id: 'bold', label: 'Bold', color: '#C8553D', bg: '#F9ECE9' },
+        { id: 'elegant', label: 'Elegant', color: '#4A607A', bg: '#EDF2F7' },
+        { id: 'playful', label: 'Playful', color: '#C26388', bg: '#FBEFF4' },
+        { id: 'minimal', label: 'Minimal', color: '#526658', bg: '#EEF3F0' },
+        { id: 'retro', label: 'Retro', color: '#9E6B38', bg: '#F8F1EA' }
+      ];
+
+      const FALLBACKS = {
+        serif: 'Georgia, serif',
+        'sans-serif': 'sans-serif',
+        display: '"Fraunces", serif',
+        monospace: 'monospace',
+        handwritten: 'cursive'
+      };
+
+      const SEED_FONTS = [
+        { id: "f_1", name: "Playfair Display", category: "serif", mood: "elegant", spottedIn: "Boutique in Paris", sample: "Exquisite aromas in amber crystal.", createdAt: "2026-09-02" },
+        { id: "f_2", name: "Space Grotesk", category: "sans-serif", mood: "bold", spottedIn: "Game studio guideline", sample: "Orbital telemetry vectors initialized.", createdAt: "2026-09-02" },
+        { id: "f_3", name: "Caveat", category: "handwritten", mood: "playful", spottedIn: "Bakery chalkboard", sample: "Fresh sourdough loaves daily at 6am.", createdAt: "2026-09-01" },
+        { id: "f_4", name: "Cinzel Decorative", category: "display", mood: "retro", spottedIn: "Vintage film poster", sample: "NOTTE MAGICA • Cinema Classico", createdAt: "2026-09-01" }
+      ];
+
+      let state = { fonts: [], filterCategory: 'all', filterMood: 'all', fontStatuses: new Map(), isStorageAvailable: true };
+      const loadedLinks = new Set();
+      const $ = id => document.getElementById(id);
+
+      const DOM = {
+        boardGrid: $('boardGrid'), filterCounter: $('filterCounter'), btnResetFilters: $('btnResetFilters'),
+        categoryChips: $('categoryChips'), moodChips: $('moodChips'), btnOpenModal: $('btnOpenModal'),
+        btnOpenModalMobile: $('btnOpenModalMobile'), btnCloseModal: $('btnCloseModal'), btnCancelForm: $('btnCancelForm'),
+        fontModal: $('fontModal'), fontForm: $('fontForm'), fontNameInput: $('fontNameInput'),
+        fontCategorySelect: $('fontCategorySelect'), fontSpottedInput: $('fontSpottedInput'),
+        fontSampleInput: $('fontSampleInput'), sampleCharCount: $('sampleCharCount'), previewText: $('previewText'),
+        previewStatus: $('previewStatus'), formFeedback: $('formFeedback'), moodPicker: $('moodPicker'),
+        toastContainer: $('toastContainer'), storageNote: $('storageNote'), btnSubmitFont: $('btnSubmitFont')
+      };
+
+      function escapeHTML(s) {
+        return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function checkStorageSupport() {
+        try {
+          const k = '__fc_test__';
+          localStorage.setItem(k, k);
+          localStorage.removeItem(k);
+          return true;
+        } catch (e) { return false; }
+      }
+
+      function loadFontsFromStorage() {
+        if (!state.isStorageAvailable) {
+          state.fonts = [...SEED_FONTS];
+          DOM.storageNote.textContent = 'Storage tidak aktif (mode memori sesi)';
+          showToast('Storage lokal non-aktif. Data hanya bertahan di sesi ini.');
+          return;
+        }
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) { state.fonts = [...SEED_FONTS]; saveFontsToStorage(); return; }
+          const parsed = JSON.parse(raw);
+          const catIds = CATEGORIES.map(c => c.id);
+          const moodIds = MOODS.map(m => m.id);
+          if (parsed && Array.isArray(parsed.fonts)) {
+            state.fonts = parsed.fonts.filter(item => (
+              item && typeof item.id === 'string' &&
+              typeof item.name === 'string' && item.name.trim().length > 0 &&
+              catIds.includes(item.category) && moodIds.includes(item.mood)
+            ));
+          } else { throw new Error('Invalid schema'); }
+        } catch (err) {
+          state.fonts = [...SEED_FONTS];
+          showToast('Data lama tidak terbaca. Memulai board baru.');
+        }
+      }
+
+      function saveFontsToStorage() {
+        if (!state.isStorageAvailable) return;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, fonts: state.fonts }));
+        } catch (err) {
+          showToast('Gagal menyimpan: Kuota penyimpanan browser penuh!');
+        }
+      }
+
+      function sanitizeFontName(name) {
+        return (name || '').replace(/[^a-zA-Z0-9 _-]/g, '').trim();
+      }
+
+      function normalizeFamilyForGoogle(name) {
+        const clean = sanitizeFontName(name);
+        return clean.replace(/\b(Regular|Bold|Italic|Medium|Light|SemiBold|Black|ExtraBold|Thin)\b/gi, '').trim() || clean;
+      }
+
+      function getFallbackFont(cat) {
+        return FALLBACKS[cat] || FALLBACKS['serif'];
+      }
+
+      function getMoodConfig(moodId) {
+        return MOODS.find(m => m.id === moodId) || { color: '#1A1714', bg: '#FAF8F5' };
+      }
+
+      function loadGoogleFont(familyName, onStatusChange) {
+        const cleanName = normalizeFamilyForGoogle(familyName);
+        if (!cleanName) { if (onStatusChange) onStatusChange('failed'); return; }
+        if (state.fontStatuses.has(cleanName)) {
+          if (onStatusChange) onStatusChange(state.fontStatuses.get(cleanName));
+          return;
+        }
+        state.fontStatuses.set(cleanName, 'pending');
+
+        const linkId = `gfont_${cleanName.replace(/\s+/g, '_')}`;
+        if (!$(linkId)) {
+          const link = document.createElement('link');
+          link.id = linkId;
+          link.rel = 'stylesheet';
+          link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(cleanName).replace(/%20/g, '+')}&display=swap`;
+          document.head.appendChild(link);
+          loadedLinks.add(cleanName);
+        }
+
+        const testPromise = document.fonts ? document.fonts.load(`16px "${cleanName}"`) : Promise.resolve([]);
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject('timeout'), 1500));
+
+        Promise.race([testPromise, timeoutPromise])
+          .then((res) => {
+            const isLoaded = document.fonts ? document.fonts.check(`16px "${cleanName}"`) : true;
+            const status = (isLoaded || (res && res.length > 0)) ? 'loaded' : 'failed';
+            state.fontStatuses.set(cleanName, status);
+            if (onStatusChange) onStatusChange(status);
+          })
+          .catch(() => {
+            state.fontStatuses.set(cleanName, 'failed');
+            if (onStatusChange) onStatusChange('failed');
+          });
+      }
+
+      function getFilteredFonts() {
+        return state.fonts.filter(font => {
+          const matchCategory = (state.filterCategory === 'all' || font.category === state.filterCategory);
+          const matchMood = (state.filterMood === 'all' || font.mood === state.filterMood);
+          return matchCategory && matchMood;
+        });
+      }
+
+      function renderBoard() {
+        const filtered = getFilteredFonts();
+        const total = state.fonts.length;
+        const count = filtered.length;
+
+        DOM.filterCounter.textContent = `Showing ${count} of ${total} ${total === 1 ? 'font' : 'fonts'}`;
+        DOM.btnResetFilters.classList.toggle('visible', (state.filterCategory !== 'all' || state.filterMood !== 'all'));
+
+        if (total === 0) {
+          DOM.boardGrid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">Aa</div>
+              <h2 class="empty-title">Board Tipografi Masih Kosong</h2>
+              <p class="empty-desc">Belum ada font yang di-pin. Temukan font menarik lalu simpan di sini.</p>
+              <button type="button" class="btn btn-primary" id="btnEmptyPin">+ Pin Font Pertama</button>
+            </div>`;
+          $('btnEmptyPin')?.addEventListener('click', openModal);
+          return;
+        }
+
+        if (count === 0) {
+          DOM.boardGrid.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon" style="color: var(--mustard); font-size: 32px; font-family: var(--font-ui);">[ ? ]</div>
+              <h2 class="empty-title">Tidak Ada Font yang Cocok</h2>
+              <p class="empty-desc">Tidak ditemukan font dengan filter kategori "${state.filterCategory}" & mood "${state.filterMood}".</p>
+              <button type="button" class="btn btn-secondary" id="btnEmptyReset">Reset Filter</button>
+            </div>`;
+          $('btnEmptyReset')?.addEventListener('click', resetFilters);
+          return;
+        }
+
+        DOM.boardGrid.innerHTML = '';
+        filtered.forEach(font => {
+          const cleanName = sanitizeFontName(font.name);
+          const fallback = getFallbackFont(font.category);
+          const moodConfig = getMoodConfig(font.mood);
+
+          const card = document.createElement('article');
+          card.className = 'font-card';
+          card.id = `card_${font.id}`;
+          card.innerHTML = `
+            <div class="card-tape"></div>
+            <div class="card-top">
+              <div class="card-header-row">
+                <h3 class="font-family-name" id="title_${font.id}" style="font-family:'${cleanName}', ${fallback}">${escapeHTML(font.name)}</h3>
+                <button type="button" class="btn-delete" data-id="${font.id}" aria-label="Hapus ${escapeHTML(font.name)}">Hapus</button>
+              </div>
+              <div class="badges-row">
+                <span class="badge badge-category">${font.category}</span>
+                <span class="badge badge-mood" style="--bg-c:${moodConfig.bg}; --fg-c:${moodConfig.color}">${font.mood}</span>
+                <span class="badge badge-fallback" id="status_${font.id}" style="display:none">not on Google</span>
+              </div>
+            </div>
+            <div class="font-sample-display" id="sample_${font.id}" style="font-family:'${cleanName}', ${fallback}">${escapeHTML(font.sample || DEFAULT_SAMPLE)}</div>
+            <div class="card-footer">
+              ${font.spottedIn ? `<span class="spotted-in-note" title="${escapeHTML(font.spottedIn)}"><span class="spotted-tag">Spotted:</span>${escapeHTML(font.spottedIn)}</span>` : `<span></span>`}
+              <time class="saved-date" datetime="${font.createdAt}">Saved ${formatDate(font.createdAt)}</time>
+            </div>`;
+
+          DOM.boardGrid.appendChild(card);
+
+          loadGoogleFont(font.name, (status) => {
+            const statusEl = $(`status_${font.id}`);
+            const titleEl = $(`title_${font.id}`);
+            const sampleEl = $(`sample_${font.id}`);
+            if (status === 'failed' && statusEl) {
+              statusEl.style.display = 'inline-flex';
+            } else if (status === 'loaded' && titleEl && sampleEl) {
+              if (statusEl) statusEl.style.display = 'none';
+              titleEl.style.fontFamily = `"${cleanName}", ${fallback}`;
+              sampleEl.style.fontFamily = `"${cleanName}", ${fallback}`;
+            }
+          });
+        });
+
+        attachDeleteHandlers();
+      }
+
+      function formatDate(d) {
+        if (!d) return '';
+        const p = d.split('-');
+        return p.length === 3 ? `${p[2]} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]} ${p[0]}` : d;
+      }
+
+      let deleteTimeout = null;
+      function attachDeleteHandlers() {
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const id = this.dataset.id;
+            if (!this.classList.contains('confirming')) {
+              document.querySelectorAll('.btn-delete.confirming').forEach(b => {
+                b.classList.remove('confirming');
+                b.textContent = 'Hapus';
+              });
+              if (deleteTimeout) clearTimeout(deleteTimeout);
+              this.classList.add('confirming');
+              this.textContent = 'Yakin hapus?';
+              deleteTimeout = setTimeout(() => {
+                this.classList.remove('confirming');
+                this.textContent = 'Hapus';
+              }, 4000);
+            } else {
+              state.fonts = state.fonts.filter(f => f.id !== id);
+              saveFontsToStorage();
+              renderBoard();
+              showToast('Font berhasil dihapus');
+            }
+          });
+        });
+      }
+
+      function handleCategoryClick(e) {
+        const btn = e.target.closest('button[data-category]');
+        if (!btn) return;
+        const val = btn.dataset.category;
+        state.filterCategory = (val === 'all' || state.filterCategory === val) ? 'all' : val;
+        updateFilterChips();
+        renderBoard();
+      }
+
+      function handleMoodClick(e) {
+        const btn = e.target.closest('button[data-mood]');
+        if (!btn) return;
+        const val = btn.dataset.mood;
+        state.filterMood = (val === 'all' || state.filterMood === val) ? 'all' : val;
+        updateFilterChips();
+        renderBoard();
+      }
+
+      function updateFilterChips() {
+        DOM.categoryChips.querySelectorAll('button').forEach(b => {
+          b.setAttribute('aria-pressed', b.dataset.category === state.filterCategory ? 'true' : 'false');
+        });
+        DOM.moodChips.querySelectorAll('button').forEach(b => {
+          b.setAttribute('aria-pressed', b.dataset.mood === state.filterMood ? 'true' : 'false');
+        });
+      }
+
+      function resetFilters() {
+        state.filterCategory = 'all';
+        state.filterMood = 'all';
+        updateFilterChips();
+        renderBoard();
+      }
+
+      let previewDebounce = null;
+      let selectedMood = 'cozy';
+
+      function updateLivePreview() {
+        const name = DOM.fontNameInput.value.trim();
+        const sample = DOM.fontSampleInput.value.trim() || DEFAULT_SAMPLE;
+        const cat = DOM.fontCategorySelect.value;
+        const cleanName = sanitizeFontName(name);
+        const fallback = getFallbackFont(cat);
+
+        DOM.previewText.textContent = sample;
+        if (!cleanName) {
+          DOM.previewText.style.fontFamily = fallback;
+          DOM.previewStatus.textContent = 'Default preview';
+          DOM.previewStatus.style.color = 'var(--light)';
+          return;
+        }
+
+        DOM.previewStatus.textContent = 'Loading font...';
+        DOM.previewStatus.style.color = 'var(--mustard)';
+
+        if (previewDebounce) clearTimeout(previewDebounce);
+        previewDebounce = setTimeout(() => {
+          loadGoogleFont(cleanName, (status) => {
+            if (status === 'loaded') {
+              DOM.previewText.style.fontFamily = `"${cleanName}", ${fallback}`;
+              DOM.previewStatus.textContent = 'Google Font Ready';
+              DOM.previewStatus.style.color = '#2E7D32';
+            } else {
+              DOM.previewText.style.fontFamily = fallback;
+              DOM.previewStatus.textContent = 'Not on Google (Fallback)';
+              DOM.previewStatus.style.color = 'var(--terra)';
+            }
+          });
+        }, 350);
+      }
+
+      function openModal() {
+        DOM.fontModal.classList.add('open');
+        DOM.fontForm.reset();
+        DOM.formFeedback.className = 'form-feedback';
+        DOM.formFeedback.textContent = '';
+        selectedMood = 'cozy';
+
+        DOM.moodPicker.querySelectorAll('.mood-pill-opt').forEach(opt => {
+          const isActive = opt.dataset.mood === 'cozy';
+          opt.classList.toggle('selected', isActive);
+          opt.setAttribute('aria-checked', isActive ? 'true' : 'false');
+        });
+
+        DOM.sampleCharCount.textContent = '0/240';
+        updateLivePreview();
+        setTimeout(() => DOM.fontNameInput.focus(), 100);
+      }
+
+      function closeModal() {
+        DOM.fontModal.classList.remove('open');
+      }
+
+      function handleFormSubmit(e) {
+        e.preventDefault();
+        DOM.formFeedback.className = 'form-feedback';
+        DOM.formFeedback.textContent = '';
+
+        const name = DOM.fontNameInput.value.trim();
+        const category = DOM.fontCategorySelect.value;
+        const mood = selectedMood;
+        const spottedIn = DOM.fontSpottedInput.value.trim();
+        const sample = DOM.fontSampleInput.value.trim() || DEFAULT_SAMPLE;
+        const catIds = CATEGORIES.map(c => c.id);
+        const moodIds = MOODS.map(m => m.id);
+
+        if (!name) {
+          DOM.formFeedback.textContent = 'Nama font tidak boleh kosong.';
+          DOM.formFeedback.classList.add('error');
+          DOM.fontNameInput.focus();
+          return;
+        }
+
+        if (name.length > 80) {
+          DOM.formFeedback.textContent = 'Nama font maksimal 80 karakter.';
+          DOM.formFeedback.classList.add('error');
+          return;
+        }
+
+        if (!catIds.includes(category) || !moodIds.includes(mood)) {
+          DOM.formFeedback.textContent = 'Kategori atau mood tidak valid.';
+          DOM.formFeedback.classList.add('error');
+          return;
+        }
+
+        if (sample.length > 240) {
+          DOM.formFeedback.textContent = 'Sample text maksimal 240 karakter.';
+          DOM.formFeedback.classList.add('error');
+          return;
+        }
+
+        const isDuplicate = state.fonts.some(f => f.name.toLowerCase() === name.toLowerCase());
+        if (isDuplicate && !DOM.btnSubmitFont.dataset.allowDuplicate) {
+          DOM.formFeedback.textContent = `Font "${name}" sudah ada di board. Klik "Save Pin" sekali lagi untuk tetap menyimpan duplikat.`;
+          DOM.formFeedback.classList.add('warn');
+          DOM.btnSubmitFont.dataset.allowDuplicate = 'true';
+          return;
+        }
+
+        delete DOM.btnSubmitFont.dataset.allowDuplicate;
+
+        const newFont = {
+          id: `f_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          name, category, mood, spottedIn, sample,
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+
+        state.fonts.unshift(newFont);
+        saveFontsToStorage();
+        closeModal();
+        renderBoard();
+        showToast(`"${name}" pinned to board!`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showToast(msg) {
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = msg;
+        DOM.toastContainer.appendChild(t);
+        setTimeout(() => {
+          t.style.transition = 'opacity 0.2s';
+          t.style.opacity = '0';
+          setTimeout(() => t.remove(), 200);
+        }, 3000);
+      }
+
+      function initControls() {
+        let catHTML = '<button type="button" class="chip" data-category="all" aria-pressed="true">All</button>';
+        let catSelectHTML = '';
+        CATEGORIES.forEach(c => {
+          catHTML += `<button type="button" class="chip" data-category="${c.id}" aria-pressed="false">${c.label}</button>`;
+          catSelectHTML += `<option value="${c.id}" ${c.id === 'serif' ? 'selected' : ''}>${c.label}</option>`;
+        });
+        DOM.categoryChips.innerHTML = catHTML;
+        DOM.fontCategorySelect.innerHTML = catSelectHTML;
+
+        let moodHTML = '<button type="button" class="chip chip-mood" data-mood="all" aria-pressed="true">All</button>';
+        let moodPickerHTML = '';
+        MOODS.forEach(m => {
+          moodHTML += `<button type="button" class="chip chip-mood" data-mood="${m.id}" style="--c:${m.color}" aria-pressed="false">${m.label}</button>`;
+          moodPickerHTML += `<button type="button" class="mood-pill-opt ${m.id === 'cozy' ? 'selected' : ''}" data-mood="${m.id}" style="--c:${m.color}" role="radio" aria-checked="${m.id === 'cozy'}">${m.label}</button>`;
+        });
+        DOM.moodChips.innerHTML = moodHTML;
+        DOM.moodPicker.innerHTML = moodPickerHTML;
+      }
+
+      function init() {
+        initControls();
+        state.isStorageAvailable = checkStorageSupport();
+        loadFontsFromStorage();
+        renderBoard();
+
+        DOM.categoryChips.addEventListener('click', handleCategoryClick);
+        DOM.moodChips.addEventListener('click', handleMoodClick);
+        DOM.btnResetFilters.addEventListener('click', resetFilters);
+
+        DOM.btnOpenModal.addEventListener('click', openModal);
+        DOM.btnOpenModalMobile.addEventListener('click', openModal);
+        DOM.btnCloseModal.addEventListener('click', closeModal);
+        DOM.btnCancelForm.addEventListener('click', closeModal);
+
+        DOM.moodPicker.addEventListener('click', (e) => {
+          const btn = e.target.closest('.mood-pill-opt');
+          if (!btn) return;
+          DOM.moodPicker.querySelectorAll('.mood-pill-opt').forEach(opt => {
+            opt.classList.remove('selected');
+            opt.setAttribute('aria-checked', 'false');
+          });
+          btn.classList.add('selected');
+          btn.setAttribute('aria-checked', 'true');
+          selectedMood = btn.dataset.mood;
+        });
+
+        DOM.fontModal.addEventListener('click', (e) => {
+          if (e.target === DOM.fontModal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && DOM.fontModal.classList.contains('open')) closeModal();
+        });
+
+        DOM.fontNameInput.addEventListener('input', updateLivePreview);
+        DOM.fontCategorySelect.addEventListener('change', updateLivePreview);
+        DOM.fontSampleInput.addEventListener('input', () => {
+          DOM.sampleCharCount.textContent = `${DOM.fontSampleInput.value.length}/240`;
+          updateLivePreview();
+        });
+
+        DOM.fontForm.addEventListener('submit', handleFormSubmit);
+
+        window.addEventListener('storage', (e) => {
+          if (e.key === STORAGE_KEY) {
+            loadFontsFromStorage();
+            renderBoard();
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
